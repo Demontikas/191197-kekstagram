@@ -1,7 +1,7 @@
-# Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
+﻿# Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
-* Студент: [Неопознанный енот](https://up.htmlacademy.ru/javascript/4/user/191197).
-* Наставник: `Неизвестно`.
+* Студент: [Евгений Марсаков](https://up.htmlacademy.ru/javascript/4/user/191197).
+* Наставник: `Дмитрий Наумов`.
 
 ---
 
