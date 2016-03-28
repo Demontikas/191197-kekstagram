@@ -82,7 +82,7 @@
     redraw: function() {
       // Очистка изображения.
       this._ctx.clearRect(0, 0, this._container.width, this._container.height);
-
+      var borderStyle = Math.round(Math.random() * 2);
       // Параметры линии.
       // NB! Такие параметры сохраняются на время всего процесса отрисовки
       // canvas'a поэтому важно вовремя поменять их, если нужно начать отрисовку
@@ -94,7 +94,13 @@
       this._ctx.strokeStyle = '#ffe753';
       // Размер штрихов. Первый элемент массива задает длину штриха, второй
       // расстояние между соседними штрихами.
-      this._ctx.setLineDash([15, 10]);
+      if (borderStyle === 0) {
+        this._ctx.setLineDash([15, 10]);
+      }
+      if (borderStyle === 1) {
+          this._ctx.setLineDash([1, 10]);
+          this._ctx.lineCap = 'round';
+      }
       // Смещение первого штриха от начала линии.
       this._ctx.lineDashOffset = 7;
 
@@ -112,14 +118,50 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
-      // Отрисовка прямоугольника, обозначающего область изображения после
-      // кадрирования. Координаты задаются от центра.
-      this._ctx.strokeRect(
+      this._ctx.beginPath();
+      this._ctx.rect(
+          -this._container.width / 2,
+          -this._container.height / 2 ,
+          this._container.width, 
+          this._container.height);
+      this._ctx.rect(
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2);
-
+      this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      this._ctx.fill('evenodd');
+      this._ctx.closePath();
+      
+      this._ctx.fillStyle = 'white';
+      this._ctx.textAlign = 'center';
+      this._ctx.textBaseline = "bottom";
+      this._ctx.font = '20px Tahoma';
+      this._ctx.fillText(
+          this._image.naturalWidth + ' x ' + this._image.naturalHeight, 
+          0, 
+          (-this._resizeConstraint.side / 2)- this._ctx.lineWidth);
+      
+       if (borderStyle === 2) {
+        var DIAMOND_SIZE = 10;
+        var SIZE =  this._resizeConstraint.side / 2;
+        var x = -this._resizeConstraint.side / 2;
+        var y = (-this._resizeConstraint.side / 2)  + DIAMOND_SIZE/2;
+        while (x < SIZE) {
+            this.drawBorder(this._ctx, SIZE, DIAMOND_SIZE / 2, x, y);
+            x += DIAMOND_SIZE;
+        }
+       }
+       else {
+        // Отрисовка прямоугольника, обозначающего область изображения после
+        // кадрирования. Координаты задаются от центра.
+        this._ctx.strokeRect(
+            (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+            (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+            this._resizeConstraint.side - this._ctx.lineWidth / 2,
+            this._resizeConstraint.side - this._ctx.lineWidth / 2);
+       }
+       
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
       // следующий кадр рисовался с привычной системой координат, где точка
@@ -127,6 +169,23 @@
       // некорректно сработает даже очистка холста или нужно будет использовать
       // сложные рассчеты для координат прямоугольника, который нужно очистить.
       this._ctx.restore();
+    },
+    
+    drawBorder: function(ctx, totalSize,size, x, y) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + size, y - size);
+        ctx.lineTo(x + size * 2, y);
+        ctx.moveTo(y, x);
+        ctx.lineTo(y - size, x + size);
+        ctx.lineTo(y, x + size * 2);    
+        ctx.moveTo(- x, totalSize - size);
+        ctx.lineTo(- x - size, totalSize);
+        ctx.lineTo(-x - size * 2, totalSize - size);
+        ctx.moveTo(totalSize - size, x);
+        ctx.lineTo(totalSize, x + size);
+        ctx.lineTo(totalSize - size, x + size * 2);
+        ctx.stroke();
     },
 
     /**
