@@ -1,5 +1,5 @@
 'use strict';
-
+var borderStyle = Math.round(Math.random() * 2);
 (function() {
   /**
    * @constructor
@@ -82,7 +82,6 @@
     redraw: function() {
       // Очистка изображения.
       this._ctx.clearRect(0, 0, this._container.width, this._container.height);
-      var borderStyle = Math.round(Math.random() * 2);
       // Параметры линии.
       // NB! Такие параметры сохраняются на время всего процесса отрисовки
       // canvas'a поэтому важно вовремя поменять их, если нужно начать отрисовку
@@ -95,7 +94,7 @@
       // Размер штрихов. Первый элемент массива задает длину штриха, второй
       // расстояние между соседними штрихами.
       if (borderStyle === 0) {
-        this._ctx.setLineDash([15, 10]);
+          this._ctx.setLineDash([15, 10]);
       }
       if (borderStyle === 1) {
           this._ctx.setLineDash([1, 10]);
@@ -125,10 +124,10 @@
           this._container.width, 
           this._container.height);
       this._ctx.rect(
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+          (-this._resizeConstraint.side / 2),
+          (-this._resizeConstraint.side / 2),
+          this._resizeConstraint.side,
+          this._resizeConstraint.side);
       this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
       this._ctx.fill('evenodd');
       this._ctx.closePath();
@@ -143,23 +142,20 @@
           (-this._resizeConstraint.side / 2)- this._ctx.lineWidth);
       
        if (borderStyle === 2) {
-        var DIAMOND_SIZE = 10;
-        var SIZE =  this._resizeConstraint.side / 2;
-        var x = -this._resizeConstraint.side / 2;
-        var y = (-this._resizeConstraint.side / 2)  + DIAMOND_SIZE/2;
-        while (x < SIZE) {
-            this.drawBorder(this._ctx, SIZE, DIAMOND_SIZE / 2, x, y);
-            x += DIAMOND_SIZE;
+           this._ctx.lineCap = 'round';
+           var FRAME_ITEM_STEP = 15;
+           var IMAGE_FRAME_SIZE =  this._resizeConstraint.side / 2;
+           var x = -this._resizeConstraint.side / 2;
         }
        }
        else {
         // Отрисовка прямоугольника, обозначающего область изображения после
         // кадрирования. Координаты задаются от центра.
         this._ctx.strokeRect(
-            (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-            (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-            this._resizeConstraint.side - this._ctx.lineWidth / 2,
-            this._resizeConstraint.side - this._ctx.lineWidth / 2);
+            (-this._resizeConstraint.side / 2),
+            (-this._resizeConstraint.side / 2),
+            this._resizeConstraint.side,
+            this._resizeConstraint.side);
        }
        
       // Восстановление состояния канваса, которое было до вызова ctx.save
@@ -171,7 +167,7 @@
       this._ctx.restore();
     },
     
-    drawBorder: function(ctx, totalSize,size, x, y) {
+    drawBorder: function(ctx, totalSize, size, x, y) {
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.lineTo(x + size, y - size);
@@ -179,8 +175,8 @@
         ctx.moveTo(y, x);
         ctx.lineTo(y - size, x + size);
         ctx.lineTo(y, x + size * 2);    
-        ctx.moveTo(- x, totalSize - size);
-        ctx.lineTo(- x - size, totalSize);
+        ctx.moveTo(-x, totalSize - size);
+        ctx.lineTo(-x - size, totalSize);
         ctx.lineTo(-x - size * 2, totalSize - size);
         ctx.moveTo(totalSize - size, x);
         ctx.lineTo(totalSize, x + size);
