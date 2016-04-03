@@ -116,18 +116,35 @@ var borderStyle = Math.round(Math.random() * 2);
       // нужно отрисовать и координаты его верхнего левого угла.
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
-
+      
+      var RectCoordinates = {
+          BeginX: (-this._resizeConstraint.side / 2 < displX) ? ((this._resizeConstraint.side / 2 > displX) ? displX : this._resizeConstraint.side / 2) : -this._resizeConstraint.side / 2,
+          BeginY: (-this._resizeConstraint.side / 2 < displY) ? ((this._resizeConstraint.side / 2 > displY) ? displY : this._resizeConstraint.side / 2) : -this._resizeConstraint.side / 2,
+      };
+      var RectSize = {
+          SizeX: (this._container.width + displX < this._resizeConstraint.side / 2) ? 
+            ((this._container.width + displX + this._resizeConstraint.side / 2 < 0) ? 
+            0: this._container.width + displX + this._resizeConstraint.side / 2): 
+            this._resizeConstraint.side / 2 - RectCoordinates.BeginX,
+          SizeY: (this._container.height + displY < this._resizeConstraint.side / 2) ? 
+            ((this._container.height + displY + this._resizeConstraint.side / 2 < 0) ?
+            0: this._container.height + displY + this._resizeConstraint.side / 2): 
+            this._resizeConstraint.side / 2 - RectCoordinates.BeginY,
+      };
+      console.log(displX,RectCoordinates.BeginX,RectSize.SizeX,
+      this._container.width + displX,
+      this._container.width + displX + this._resizeConstraint.side / 2);
       this._ctx.beginPath();
       this._ctx.rect(
-          -this._container.width / 2,
-          -this._container.height / 2 ,
+          -(this._resizeConstraint.x + this._resizeConstraint.side / 2),
+          -(this._resizeConstraint.y + this._resizeConstraint.side / 2),
           this._container.width, 
           this._container.height);
       this._ctx.rect(
-          (-this._resizeConstraint.side / 2),
-          (-this._resizeConstraint.side / 2),
-          this._resizeConstraint.side,
-          this._resizeConstraint.side);
+          RectCoordinates.BeginX,
+          RectCoordinates.BeginY,
+          RectSize.SizeX,
+          RectSize.SizeY);
       this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
       this._ctx.fill('evenodd');
       this._ctx.closePath();
@@ -146,7 +163,10 @@ var borderStyle = Math.round(Math.random() * 2);
            var FRAME_ITEM_STEP = 15;
            var IMAGE_FRAME_SIZE =  this._resizeConstraint.side / 2;
            var x = -this._resizeConstraint.side / 2;
-        }
+           var y = (-this._resizeConstraint.side / 2)  + FRAME_ITEM_STEP/2;
+           while (x < IMAGE_FRAME_SIZE) {
+               this.drawBorder(this._ctx, IMAGE_FRAME_SIZE, FRAME_ITEM_STEP / 2, x, y);
+               x += FRAME_ITEM_STEP;}
        }
        else {
         // Отрисовка прямоугольника, обозначающего область изображения после
