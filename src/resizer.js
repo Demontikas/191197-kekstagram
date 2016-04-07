@@ -94,11 +94,11 @@ var borderStyle = Math.round(Math.random() * 2);
       // Размер штрихов. Первый элемент массива задает длину штриха, второй
       // расстояние между соседними штрихами.
       if (borderStyle === 0) {
-          this._ctx.setLineDash([15, 10]);
+        this._ctx.setLineDash([15, 10]);
       }
       if (borderStyle === 1) {
-          this._ctx.setLineDash([1, 10]);
-          this._ctx.lineCap = 'round';
+        this._ctx.setLineDash([1, 10]);
+        this._ctx.lineCap = 'round';
       }
       // Смещение первого штриха от начала линии.
       this._ctx.lineDashOffset = 7;
@@ -116,59 +116,82 @@ var borderStyle = Math.round(Math.random() * 2);
       // нужно отрисовать и координаты его верхнего левого угла.
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
-      
-      var RectCoordinates = {
-          BeginX: (-this._resizeConstraint.side / 2 < displX) ? ((this._resizeConstraint.side / 2 > displX) ? displX : this._resizeConstraint.side / 2) : -this._resizeConstraint.side / 2,
-          BeginY: (-this._resizeConstraint.side / 2 < displY) ? ((this._resizeConstraint.side / 2 > displY) ? displY : this._resizeConstraint.side / 2) : -this._resizeConstraint.side / 2,
-      };
-      var RectSize = {
-          SizeX: (this._container.width + displX < this._resizeConstraint.side / 2) ? 
-            ((this._container.width + displX + this._resizeConstraint.side / 2 < 0) ? 
-            0: this._container.width + displX + this._resizeConstraint.side / 2): 
-            this._resizeConstraint.side / 2 - RectCoordinates.BeginX,
-          SizeY: (this._container.height + displY < this._resizeConstraint.side / 2) ? 
-            ((this._container.height + displY + this._resizeConstraint.side / 2 < 0) ?
-            0: this._container.height + displY + this._resizeConstraint.side / 2): 
-            this._resizeConstraint.side / 2 - RectCoordinates.BeginY,
-      };
-      console.log(displX,RectCoordinates.BeginX,RectSize.SizeX,
-      this._container.width + displX,
-      this._container.width + displX + this._resizeConstraint.side / 2);
+
+      var BeginX, BeginY, SizeX, SizeY;
+      if (-this._resizeConstraint.side / 2 < displX) {
+        if (this._resizeConstraint.side / 2 > displX) {
+          BeginX = displX;
+        } else {
+          BeginX = this._resizeConstraint.side / 2;
+        }
+      } else {
+        BeginX = -this._resizeConstraint.side / 2;
+      }
+
+      if (-this._resizeConstraint.side / 2 < displY) {
+        if (this._resizeConstraint.side / 2 > displY) {
+          BeginY = displY;
+        } else {
+          BeginY = this._resizeConstraint.side / 2;
+        }
+      } else {
+        BeginY = -this._resizeConstraint.side / 2;
+      }
+
+      if (this._container.width + displX < this._resizeConstraint.side / 2) {
+        if (this._container.width + displX + this._resizeConstraint.side / 2 < 0) {
+          SizeX = 0;
+        } else {
+          SizeX = this._container.width + displX + this._resizeConstraint.side / 2;
+        }
+      } else {
+        SizeX = this._resizeConstraint.side / 2 - BeginX;
+      }
+
+      if (this._container.height + displY < this._resizeConstraint.side / 2) {
+        if (this._container.height + displY + this._resizeConstraint.side / 2 < 0) {
+          SizeY = 0;
+        } else {
+          SizeY = this._container.height + displY + this._resizeConstraint.side / 2;
+        }
+      } else {
+        SizeY = this._resizeConstraint.side / 2 - BeginY;
+      }
       this._ctx.beginPath();
       this._ctx.rect(
           -(this._resizeConstraint.x + this._resizeConstraint.side / 2),
           -(this._resizeConstraint.y + this._resizeConstraint.side / 2),
-          this._container.width, 
+          this._container.width,
           this._container.height);
       this._ctx.rect(
-          RectCoordinates.BeginX,
-          RectCoordinates.BeginY,
-          RectSize.SizeX,
-          RectSize.SizeY);
+          BeginX,
+          BeginY,
+          SizeX,
+          SizeY);
       this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
       this._ctx.fill('evenodd');
       this._ctx.closePath();
-      
+
       this._ctx.fillStyle = 'white';
       this._ctx.textAlign = 'center';
-      this._ctx.textBaseline = "bottom";
+      this._ctx.textBaseline = 'bottom';
       this._ctx.font = '20px Tahoma';
       this._ctx.fillText(
-          this._image.naturalWidth + ' x ' + this._image.naturalHeight, 
-          0, 
-          (-this._resizeConstraint.side / 2)- this._ctx.lineWidth);
-      
-       if (borderStyle === 2) {
-           this._ctx.lineCap = 'round';
-           var FRAME_ITEM_STEP = 15;
-           var IMAGE_FRAME_SIZE =  this._resizeConstraint.side / 2;
-           var x = -this._resizeConstraint.side / 2;
-           var y = (-this._resizeConstraint.side / 2)  + FRAME_ITEM_STEP/2;
-           while (x < IMAGE_FRAME_SIZE) {
-               this.drawBorder(this._ctx, IMAGE_FRAME_SIZE, FRAME_ITEM_STEP / 2, x, y);
-               x += FRAME_ITEM_STEP;}
-       }
-       else {
+          this._image.naturalWidth + ' x ' + this._image.naturalHeight,
+          0,
+          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
+
+      if (borderStyle === 2) {
+        this._ctx.lineCap = 'round';
+        var FRAME_ITEM_STEP = 15;
+        var IMAGE_FRAME_SIZE = this._resizeConstraint.side / 2;
+        var x = -this._resizeConstraint.side / 2;
+        var y = (-this._resizeConstraint.side / 2) + FRAME_ITEM_STEP / 2;
+        while (x < IMAGE_FRAME_SIZE) {
+          this.drawBorder(this._ctx, IMAGE_FRAME_SIZE, FRAME_ITEM_STEP / 2, x, y);
+          x += FRAME_ITEM_STEP;
+        }
+      } else {
         // Отрисовка прямоугольника, обозначающего область изображения после
         // кадрирования. Координаты задаются от центра.
         this._ctx.strokeRect(
@@ -176,8 +199,8 @@ var borderStyle = Math.round(Math.random() * 2);
             (-this._resizeConstraint.side / 2),
             this._resizeConstraint.side,
             this._resizeConstraint.side);
-       }
-       
+      }
+
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
       // следующий кадр рисовался с привычной системой координат, где точка
@@ -186,22 +209,22 @@ var borderStyle = Math.round(Math.random() * 2);
       // сложные рассчеты для координат прямоугольника, который нужно очистить.
       this._ctx.restore();
     },
-    
+
     drawBorder: function(ctx, totalSize, size, x, y) {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + size, y - size);
-        ctx.lineTo(x + size * 2, y);
-        ctx.moveTo(y, x);
-        ctx.lineTo(y - size, x + size);
-        ctx.lineTo(y, x + size * 2);    
-        ctx.moveTo(-x, totalSize - size);
-        ctx.lineTo(-x - size, totalSize);
-        ctx.lineTo(-x - size * 2, totalSize - size);
-        ctx.moveTo(totalSize - size, x);
-        ctx.lineTo(totalSize, x + size);
-        ctx.lineTo(totalSize - size, x + size * 2);
-        ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + size, y - size);
+      ctx.lineTo(x + size * 2, y);
+      ctx.moveTo(y, x);
+      ctx.lineTo(y - size, x + size);
+      ctx.lineTo(y, x + size * 2);
+      ctx.moveTo(-x, totalSize - size);
+      ctx.lineTo(-x - size, totalSize);
+      ctx.lineTo(-x - size * 2, totalSize - size);
+      ctx.moveTo(totalSize - size, x);
+      ctx.lineTo(totalSize, x + size);
+      ctx.lineTo(totalSize - size, x + size * 2);
+      ctx.stroke();
     },
 
     /**
