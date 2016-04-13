@@ -579,3 +579,8 @@ input[type=radio]:checked + .upload-filter-label {
 .likes-count-liked:before {
   background-position-x: -18px;
 }
+.upload-form-controls-fwd:disabled {
+  float: right;
+  background: rgba(255, 55, 52, 0.2) url("../img/icon-cross.png") center no-repeat;
+}
+

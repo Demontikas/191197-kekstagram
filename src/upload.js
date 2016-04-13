@@ -103,6 +103,50 @@
    */
   var uploadMessage = document.querySelector('.upload-message');
 
+  var size = document.querySelector('#resize-size');
+  var horiz = document.querySelector('#resize-x');
+  var vert = document.querySelector('#resize-y');
+  horiz.min = 0;
+  vert.min = 0;
+  size.min = 1;
+  horiz.value = 0;
+  vert.value = 0;
+  size.value = 1;
+
+  horiz.oninput = function() {
+    inputFieldMaxSize();
+  };
+
+  vert.oninput = function() {
+    inputFieldMaxSize();
+  };
+
+  size.oninput = function() {
+    inputFieldMaxSize();
+  };
+
+  var inputFieldMaxSize = function() {
+    if (currentResizer._image.naturalWidth - size.value < 0) {
+      horiz.max = 0;
+    } else {
+      horiz.max = currentResizer._image.naturalWidth - size.value;
+    } if (currentResizer._image.naturalHeight - size.value < 0) {
+      vert.max = 0;
+    } else {
+      vert.max = currentResizer._image.naturalHeight - size.value;
+    }
+    if (currentResizer._image.naturalHeight - vert.value < currentResizer._image.naturalWidth - horiz.value) {
+      size.max = currentResizer._image.naturalHeight - vert.value;
+    } else {
+      size.max = currentResizer._image.naturalWidth - horiz.value;
+    }
+    if (size.validity.valid) {
+      document.querySelector('.upload-form-controls-fwd').removeAttribute('disabled');
+    } else {
+      document.querySelector('.upload-form-controls-fwd').setAttribute('disabled');
+    }
+  };
+
   /**
    * @param {Action} action
    * @param {string=} message
