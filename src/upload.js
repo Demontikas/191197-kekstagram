@@ -15,7 +15,7 @@
     'PNG': '',
     'SVG+XML': ''
   };
-
+  var browserCookies = require('browser-cookies');
   /** @enum {number} */
   var Action = {
     ERROR: 0,
@@ -256,7 +256,18 @@
     filterForm.classList.add('invisible');
     resizeForm.classList.remove('invisible');
   };
-
+  var dateNow = new Date();
+  var year = dateNow.getFullYear();
+  var birthday = new Date(year + '-04-14');
+  var daysLeft = birthday - dateNow;
+  if (daysLeft < 0) {
+    birthday = new Date(year + 1 + '-04-14');
+    daysLeft = birthday - dateNow;
+  }
+  var filterCookie = browserCookies.get('filter') || 'filter-none';
+  filterImage.className = 'filter-image-preview ' + filterCookie;
+  filterForm.querySelector('#upload-filter-none').removeAttribute('checked');
+  filterForm.querySelector('#upload-' + filterCookie).setAttribute('checked', '');
   /**
    * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
    * записав сохраненный фильтр в cookie.
@@ -267,6 +278,8 @@
 
     cleanupResizer();
     updateBackground();
+
+    browserCookies.set('filter', filterCookie, {expires: daysLeft});
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
@@ -291,7 +304,7 @@
     var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
-
+    filterCookie = filterMap[selectedFilter];
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
