@@ -259,10 +259,10 @@
   var dateNow = new Date();
   var year = dateNow.getFullYear();
   var birthday = new Date(year + '-04-14');
-  var daysLeft = birthday - dateNow;
+  var daysLeft = dateNow - birthday;
   if (daysLeft < 0) {
-    birthday = new Date(year + 1 + '-04-14');
-    daysLeft = birthday - dateNow;
+    birthday = new Date(year - 1 + '-04-14');
+    daysLeft = dateNow - birthday;
   }
   var filterCookie = browserCookies.get('filter') || 'filter-none';
   filterImage.className = 'filter-image-preview ' + filterCookie;
