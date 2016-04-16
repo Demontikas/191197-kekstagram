@@ -26,6 +26,9 @@ var getPictureElement = function(data, container) {
     element.replaceChild(backgroundImage, img);
   };
   backgroundImage.src = data.url;
+  backgroundImage.onerror = function() {
+    element.classList.add('picture-load-failure');
+  };
   backgroundLoadTimeout = setTimeout(function() {
     backgroundImage.src = '';
     element.classList.add('picture-load-failure');
