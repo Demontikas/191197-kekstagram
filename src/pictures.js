@@ -6,13 +6,15 @@ var templateElement = document.querySelector('#picture-template');
 var elementToClone;
 
 if ('content' in templateElement) {
-  elementToClone = templateElement.content.querySelector('.picture');
+  elementToClone = templateElement.content.firstElementChild;
 } else {
   elementToClone = templateElement.querySelector('.picture');
 }
 var getPictureElement = function(data, container) {
   var element = elementToClone.cloneNode(true);
   var img = element.querySelector('img');
+  element.querySelector('.picture-comments').textContent = data.comments;
+  element.querySelector('.picture-likes').textContent = data.likes;
 
   container.appendChild(element);
 
@@ -24,13 +26,9 @@ var getPictureElement = function(data, container) {
     element.replaceChild(backgroundImage, img);
   };
   backgroundImage.src = data.url;
-  backgroundImage.width = 186;
-  backgroundImage.height = 186;
-  backgroundImage.onerror = function() {
-    element.classList.add('picture-load-failure');
-  };
   backgroundLoadTimeout = setTimeout(function() {
     backgroundImage.src = '';
+    element.classList.add('picture-load-failure');
   }, 10000);
   return element;
 };
