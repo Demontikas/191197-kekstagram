@@ -1,6 +1,8 @@
 'use strict';
 
-document.querySelector('.filters').classList.add('hidden');
+var formFilters = document.querySelector('.filters');
+formFilters.classList.remove('hidden');
+var filters = formFilters.querySelectorAll('input');
 var picturesContainer = document.querySelector('.pictures');
 var templateElement = document.querySelector('#picture-template');
 var elementToClone;
@@ -36,7 +38,87 @@ var getPictureElement = function(data, container) {
   return element;
 };
 
-window.pictures.forEach(function(picture) {
-  getPictureElement(picture, picturesContainer);
+var renderPictures = function(pictures) {
+  picturesContainer.innerHTML = '';
+  pictures.forEach(function(picture) {
+    getPictureElement(picture, picturesContainer);
+  });
+};
+var getPictures = function(callback) {
+
+  picturesContainer.classList.add('pictures-loading');
+  var xhr = new XMLHttpRequest();
+  xhr.timeout = 10000;
+  xhr.onreadystatechange = function(evt) {
+    if (xhr.readyState === 4) {
+      if (xhr.status !== 200 && xhr.status !== 304) {
+        picturesContainer.classList.remove('pictures-loading');
+        picturesContainer.classList.add('pictures-failure');
+      } else {
+        try {
+          var loadedData = JSON.parse(evt.target.response);
+        } catch(e) {
+          picturesContainer.classList.remove('pictures-loading');
+          picturesContainer.classList.add('pictures-failure');
+        }
+        loadedData.forEach(function(pic, i) {
+          var date = new Date(pic.date);
+          loadedData[i].date = date.valueOf();
+        });
+        callback(loadedData);
+        picturesContainer.classList.remove('pictures-loading');
+      }
+    }
+  };
+
+  xhr.open('GET', '//o0.github.io/assets/json/pictures.json');
+  xhr.send();
+};
+var pictures;
+getPictures(function(loadedPictures) {
+  pictures = loadedPictures;
+  setFiltersEnabled(true);
+  setFilterEnabled(DEFAULT_FILTER);
 });
+
+var Filter = {
+  'POPULAR': 'filter-popular',
+  'NEW': 'filter-new',
+  'DISCUSSED': 'filter-discussed'
+};
+var DEFAULT_FILTER = Filter.POPULAR;
+var setFiltersEnabled = function(enabled) {
+  for (var i = 0; i < filters.length; i++) {
+    filters[i].onclick = enabled ? function() {
+      setFilterEnabled(this.id);
+    } : null;
+  }
+};
+var setFilterEnabled = function(filter) {
+  var filteredPictures = getFilteredPictures(pictures, filter);
+  renderPictures(filteredPictures);
+};
+var getFilteredPictures = function(image, filter) {
+  var picturesToFilter = image.slice(0);
+  switch (filter) {
+    case Filter.DISCUSSED:
+      picturesToFilter.sort(function(a, b) {
+        return b.comments - a.comments;
+      });
+      break;
+    case Filter.NEW:
+      picturesToFilter.sort(function(a, b) {
+        return b.date - a.date;
+      });
+      break;
+    case Filter.POPULAR:
+      picturesToFilter.sort(function(a, b) {
+        return b.likes - a.likes;
+      });
+      break;
+    default:
+      break;
+  }
+  return picturesToFilter;
+};
 
