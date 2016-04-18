@@ -46,30 +46,28 @@ var renderPictures = function(pictures) {
 };
 var getPictures = function(callback) {
 
+  picturesContainer.classList.add('pictures-loading');
   var xhr = new XMLHttpRequest();
-  xhr.onerror = function() {
-    picturesContainer.classList.add('pictures-failure');
-  };
   xhr.timeout = 10000;
-  xhr.ontimeout = function() {
-    picturesContainer.classList.add('pictures-failure');
-  };
-  xhr.onreadystatechange = function() {
+  xhr.onreadystatechange = function(evt) {
     if (xhr.readyState === 4) {
-      picturesContainer.classList.remove('pictures-loading');
-      if (xhr.status !== 200) {
+      if (xhr.status !== 200 && xhr.status !== 304) {
+        picturesContainer.classList.remove('pictures-loading');
         picturesContainer.classList.add('pictures-failure');
+      } else {
+        try {
+          var loadedData = JSON.parse(evt.target.response);
+        } catch(e) {
+          picturesContainer.classList.remove('pictures-loading');
+          picturesContainer.classList.add('pictures-failure');
+        }
+        loadedData.forEach(function(pic, i) {
+          var date = new Date(pic.date);
+          loadedData[i].date = date.valueOf();
+        });
+        callback(loadedData);
+        picturesContainer.classList.remove('pictures-loading');
       }
-    } else {
-      picturesContainer.classList.add('pictures-loading');
-    }
-  };
-  xhr.onload = function(evt) {
-    try {
-      var loadedData = JSON.parse(evt.target.response);
-      callback(loadedData);
-    } catch(e) {
-      picturesContainer.classList.add('pictures-failure');
     }
   };
 
@@ -100,9 +98,8 @@ var setFilterEnabled = function(filter) {
   var filteredPictures = getFilteredPictures(pictures, filter);
   renderPictures(filteredPictures);
 };
-var getFilteredPictures = function(hotels, filter) {
-  var picturesToFilter = pictures.slice(0);
-
+var getFilteredPictures = function(image, filter) {
+  var picturesToFilter = image.slice(0);
   switch (filter) {
     case Filter.DISCUSSED:
       picturesToFilter.sort(function(a, b) {
@@ -111,9 +108,7 @@ var getFilteredPictures = function(hotels, filter) {
       break;
     case Filter.NEW:
       picturesToFilter.sort(function(a, b) {
-        var dateOne = new Date(a.date);
-        var dateTwo = new Date(b.date);
-        return dateTwo - dateOne;
+        return b.date - a.date;
       });
       break;
     case Filter.POPULAR:
