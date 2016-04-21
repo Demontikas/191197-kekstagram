@@ -70,7 +70,7 @@ var getPictures = function(callback) {
 var pictures;
 getPictures(function(loadedPictures) {
   pictures = loadedPictures;
-  setFiltersEnabled(true);
+  setFiltersEnabled();
   setFilterEnabled(DEFAULT_FILTER);
   setScrollEnabled();
 });
@@ -81,7 +81,7 @@ var Filter = {
   'DISCUSSED': 'filter-discussed'
 };
 var DEFAULT_FILTER = Filter.POPULAR;
-var setFiltersEnabled = function(enabled) {
+var setFiltersEnabled = function() {
   formFilters.addEventListener('click', function(evt) {
     if (evt.target.classList.contains('filters-radio')) {
       setFilterEnabled(evt.target.id);
@@ -92,7 +92,7 @@ var setFilterEnabled = function(filter) {
   filteredPictures = getFilteredPictures(pictures, filter);
   pageNumber = 0;
   renderPictures(filteredPictures, pageNumber, true);
-  while(isBottomReached()&&isNextPageAvailable(filteredPictures, pageNumber, PAGE_SIZE)){
+  while(isBottomReached() && isNextPageAvailable(filteredPictures, pageNumber, PAGE_SIZE)) {
     pageNumber++;
     renderPictures(filteredPictures, pageNumber);
   }
@@ -130,30 +130,30 @@ var pageNumber = 0;
 /** @type {Array.<Object>} */
 var filteredPictures = [];
 
-/** 
- * @param {Array.<Object>} pictures 
+/**
+ * @param {Array.<Object>} pictures
  * @param {number} page
  * @param {boolean} replace
- */
-var renderPictures = function(pictures, page, replace) {
-  
+*/
+var renderPictures = function(images, page, replace) {
+
   if (replace) {
     picturesContainer.innerHTML = '';
   }
-  
+
   var from = page * PAGE_SIZE;
   var to = from + PAGE_SIZE;
-  
-  pictures.slice(from, to).forEach(function(picture) {
+
+  images.slice(from, to).forEach(function(picture) {
     getPictureElement(picture, picturesContainer);
   });
 };
 
 var setScrollEnabled = function() {
-  
+
   var scrollTimeout;
-  
-  window.addEventListener('scroll', function(evt) {
+
+  window.addEventListener('scroll', function() {
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(function() {
       if (isBottomReached() &&
@@ -178,7 +178,7 @@ var isBottomReached = function() {
  * @param {number} pageSize
  * @return {boolean}
  */
-var isNextPageAvailable = function(pictures, page, pageSize) {
-  return page < Math.floor(pictures.length / pageSize);
+var isNextPageAvailable = function(pic, page, pageSize) {
+  return page < Math.floor(pic.length / pageSize);
 };
 
