@@ -109,21 +109,39 @@
   horiz.min = 0;
   vert.min = 0;
   size.min = 1;
-  horiz.value = 0;
-  vert.value = 0;
-  size.value = 1;
+  var resizer;
+  /**
+   * обработчик события на объект window,
+   * который будет брать значения смещения и размера кадра из объекта currentResizer
+   * и добавлять их в форму.
+   */
+  window.addEventListener('resizerchange', function() {
+    resizer = currentResizer.getConstraint();
+    horiz.value = resizer.x;
+    vert.value = resizer.y;
+    size.value = resizer.side;
+  });
 
-  horiz.oninput = function() {
+  horiz.addEventListener('input', function() {
     inputFieldMaxSize();
-  };
+    resizer = currentResizer.getConstraint();
+    var x = horiz.value - resizer.x;
+    currentResizer.moveConstraint(x);
+  });
 
-  vert.oninput = function() {
+  vert.addEventListener('input', function() {
     inputFieldMaxSize();
-  };
+    resizer = currentResizer.getConstraint();
+    var y = vert.value - resizer.y;
+    currentResizer.moveConstraint(0, y);
+  });
 
-  size.oninput = function() {
+  size.addEventListener('input', function() {
     inputFieldMaxSize();
-  };
+    resizer = currentResizer.getConstraint();
+    var side = size.value - resizer.side;
+    currentResizer.moveConstraint(0, 0, side);
+  });
 
   var inputFieldMaxSize = function() {
     if (currentResizer._image.naturalWidth - size.value < 0) {
@@ -183,7 +201,7 @@
    * и показывается форма кадрирования.
    * @param {Event} evt
    */
-  uploadForm.onchange = function(evt) {
+  uploadForm.addEventListener('change', function(evt) {
     var element = evt.target;
     if (element.id === 'upload-file') {
       // Проверка типа загружаемого файла, тип должен быть изображением
@@ -213,14 +231,14 @@
         showMessage(Action.ERROR);
       }
     }
-  };
+  });
 
   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
    * @param {Event} evt
    */
-  resizeForm.onreset = function(evt) {
+  resizeForm.addEventListener('reset', function(evt) {
     evt.preventDefault();
 
     cleanupResizer();
@@ -228,14 +246,14 @@
 
     resizeForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Обработка отправки формы кадрирования. Если форма валидна, экспортирует
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
-  resizeForm.onsubmit = function(evt) {
+  resizeForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
 
     if (resizeFormIsValid()) {
@@ -244,18 +262,18 @@
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
     }
-  };
+  });
 
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
    */
-  filterForm.onreset = function(evt) {
+  filterForm.addEventListener('reset', function(evt) {
     evt.preventDefault();
 
     filterForm.classList.add('invisible');
     resizeForm.classList.remove('invisible');
-  };
+  });
   var dateNow = new Date();
   var year = dateNow.getFullYear();
   var birthday = new Date(year + '-04-14');
@@ -273,7 +291,7 @@
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
-  filterForm.onsubmit = function(evt) {
+  filterForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
 
     cleanupResizer();
@@ -283,13 +301,13 @@
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Обработчик изменения фильтра. Добавляет класс из filterMap соответствующий
    * выбранному значению в форме.
    */
-  filterForm.onchange = function() {
+  filterForm.addEventListener('change', function() {
     if (!filterMap) {
       // Ленивая инициализация. Объект не создается до тех пор, пока
       // не понадобится прочитать его в первый раз, а после этого запоминается
@@ -309,7 +327,7 @@
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
-  };
+  });
 
   cleanupResizer();
   updateBackground();

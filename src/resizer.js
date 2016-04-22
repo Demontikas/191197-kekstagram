@@ -1,5 +1,5 @@
 'use strict';
-var borderStyle = Math.round(Math.random() * 2);
+var borderStyle = Math.round(Math.random() * 1);
 (function() {
   /**
    * @constructor
