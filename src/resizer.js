@@ -1,6 +1,8 @@
 'use strict';
-var borderStyle = Math.round(Math.random() * 1);
+
 (function() {
+
+  var borderStyle = Math.round(Math.random() * 1);
   /**
    * @constructor
    * @param {string} image
