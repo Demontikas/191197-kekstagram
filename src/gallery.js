@@ -21,7 +21,6 @@ var galleryPictures = [];
 /**
  * Показ следующей картинки
  */
-galleryContainerPreview.addEventListener('click', _onPhotoClick, true);
 function _onPhotoClick() {
   if (indexOfArray < galleryPictures.length - 1) {
     showGallery(++indexOfArray);
@@ -36,7 +35,6 @@ galleryContainer.addEventListener('click', function() {
 /**
  * Закрытие галереи при нажатии на ESC
  */
-document.addEventListener('keydown', _onDocumentKeyDown);
 function _onDocumentKeyDown(evt) {
   if(evt.keyCode === 27) {
     hideGallery();
@@ -66,6 +64,8 @@ var showGallery = function(index) {
   galleryLoadTimeout = setTimeout(function() {
     galleryImage.src = '';
   }, 10000);
+  galleryContainerPreview.addEventListener('click', _onPhotoClick, true);
+  document.addEventListener('keydown', _onDocumentKeyDown);
 };
 var setPictureGallery = function(pictures) {
   galleryPictures = pictures;
