@@ -1,7 +1,6 @@
 'use strict';
 
 var galleryContainer = document.querySelector('.gallery-overlay');
-var galleryContainerClose = galleryContainer.querySelector('.gallery-overlay-close');
 var galleryContainerPreview = document.querySelector('.gallery-overlay-preview');
 
 /** @type {number} */
@@ -11,7 +10,6 @@ var indexOfArray;
  * функция закрытия галереи
  */
 var hideGallery = function() {
-  galleryContainerPreview.classList.remove('pictures-failure');
   galleryContainer.classList.add('invisible');
 };
 
@@ -21,25 +19,17 @@ var galleryPictures = [];
 /**
  * Показ следующей картинки
  */
-galleryContainerPreview.addEventListener('click', function(evt) {
-  evt.stopPropagation();
+galleryContainerPreview.addEventListener('click', function() {
   if (indexOfArray < galleryPictures.length - 1) {
-    galleryContainerPreview.classList.remove('pictures-failure');
     showGallery(++indexOfArray);
   }
 });
 /**
- * Закрытие галереи при клике на черный оверлей
+ * Закрытие галереи при клике на черный оверлей и кнопку закрытия
  */
 galleryContainer.addEventListener('click', function() {
   hideGallery();
-});
-/**
- * Закрытие галереи при клике на кнопку закрытия
- */
-galleryContainerClose.addEventListener('click', function() {
-  hideGallery();
-});
+}, true);
 /**
  * Закрытие галереи при нажатии на ESC
  */
@@ -67,14 +57,10 @@ var showGallery = function(index) {
   };
   galleryImage.src = galleryPictures[index].url;
   galleryImage.onerror = function() {
-    galleryImage.src = '../img/icon-warning.png';
-    galleryImage.width = 400;
-    galleryImage.height = 400;
-    galleryContainerPreview.classList.add('pictures-failure');
+    galleryImage.src = '../img/file-not-found.jpg';
   };
   galleryLoadTimeout = setTimeout(function() {
     galleryImage.src = '';
-    galleryContainerPreview.classList.add('pictures-failure');
   }, 10000);
 };
 var setPictureGallery = function(pictures) {
