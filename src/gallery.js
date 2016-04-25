@@ -11,6 +11,8 @@ var indexOfArray;
  */
 var hideGallery = function() {
   galleryContainer.classList.add('invisible');
+  galleryContainerPreview.removeEventListener('click', _onPhotoClick);
+  document.removeEventListener('keydown', _onDocumentKeyDown);
 };
 
 /** @type {Array.<Object>} */
@@ -19,11 +21,12 @@ var galleryPictures = [];
 /**
  * Показ следующей картинки
  */
-galleryContainerPreview.addEventListener('click', function() {
+galleryContainerPreview.addEventListener('click', _onPhotoClick, true);
+function _onPhotoClick() {
   if (indexOfArray < galleryPictures.length - 1) {
     showGallery(++indexOfArray);
   }
-});
+}
 /**
  * Закрытие галереи при клике на черный оверлей и кнопку закрытия
  */
@@ -33,11 +36,12 @@ galleryContainer.addEventListener('click', function() {
 /**
  * Закрытие галереи при нажатии на ESC
  */
-document.addEventListener('keydown', function(evt) {
+document.addEventListener('keydown', _onDocumentKeyDown);
+function _onDocumentKeyDown(evt) {
   if(evt.keyCode === 27) {
     hideGallery();
   }
-});
+}
 /**
  * Показ галереи при клике на картинку
  * @param {number} index
