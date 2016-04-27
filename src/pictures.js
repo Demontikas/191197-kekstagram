@@ -128,6 +128,7 @@ var renderPictures = function(images, page, replace) {
   var to = from + PAGE_SIZE;
 
   images.slice(from, to).forEach(function(picture) {
+    photos.push(new Photo(picture, picturesContainer));
   });
 };
 
