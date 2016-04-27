@@ -6,6 +6,7 @@ var templateElement = document.querySelector('#picture-template');
 var elementToClone;
 
 var utilities = require('./utilities');
+var gallery = require('./gallery');
 
 if ('content' in templateElement) {
   elementToClone = templateElement.content.firstElementChild;
@@ -35,6 +36,10 @@ var getPictureElement = function(data, container) {
     backgroundImage.src = '';
     element.classList.add('picture-load-failure');
   }, 10000);
+  element.addEventListener('click', function(evt) {
+    evt.preventDefault();
+    gallery.showGallery(filteredPictures.indexOf(data));
+  });
   return element;
 };
 
@@ -86,6 +91,7 @@ var setFiltersEnabled = function() {
 };
 var setFilterEnabled = function(filter) {
   filteredPictures = utilities.getFilteredPictures(pictures, filter);
+  gallery.setPictureGallery(filteredPictures);
   pageNumber = 0;
   renderPictures(filteredPictures, pageNumber, true);
   while(utilities.isBottomReached() && utilities.isNextPageAvailable(filteredPictures, pageNumber, PAGE_SIZE)) {
