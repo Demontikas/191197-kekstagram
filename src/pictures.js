@@ -108,7 +108,8 @@ var pageNumber = 0;
 
 /** @type {Array.<Object>} */
 var filteredPictures = [];
-
+/** @type {Array.<Object>} */
+var photos = [];
 /**
  * @param {Array.<Object>} pictures
  * @param {number} page
@@ -117,14 +118,16 @@ var filteredPictures = [];
 var renderPictures = function(images, page, replace) {
 
   if (replace) {
-    picturesContainer.innerHTML = '';
+    photos.forEach(function(photo) {
+      photo.remove();
+    });
+    photos = [];
   }
 
   var from = page * PAGE_SIZE;
   var to = from + PAGE_SIZE;
 
   images.slice(from, to).forEach(function(picture) {
-    getPictureElement(picture, picturesContainer);
   });
 };
 
@@ -143,3 +146,24 @@ var setScrollEnabled = function() {
     }, 100);
   });
 };
+/**
+ * @param {Object} data
+ * @param {Element} container
+ * @constructor
+ */
+var Photo = function(data, container) {
+  var self = this;
+  this.data = data;
+  this.element = getPictureElement(this.data, container);
+  this.onPictureClick = function(evt) {
+    evt.preventDefault();
+    gallery.showGallery(filteredPictures.indexOf(self.data));
+  };
+  this.remove = function() {
+    self.element.removeEventListener('click', self.onPictureClick);
+    container.removeChild(self.element);
+  };
+  this.element.addEventListener('click', this.onPictureClick);
+  container.appendChild(this.element);
+}
+
