@@ -7,6 +7,7 @@ var elementToClone;
 
 var utilities = require('./utilities');
 var gallery = require('./gallery');
+var photo = require('./photo');
 
 if ('content' in templateElement) {
   elementToClone = templateElement.content.firstElementChild;
@@ -118,8 +119,8 @@ var photos = [];
 var renderPictures = function(images, page, replace) {
 
   if (replace) {
-    photos.forEach(function(photo) {
-      photo.remove();
+    photos.forEach(function(img) {
+      img.remove();
     });
     photos = [];
   }
@@ -128,7 +129,7 @@ var renderPictures = function(images, page, replace) {
   var to = from + PAGE_SIZE;
 
   images.slice(from, to).forEach(function(picture) {
-    photos.push(new Photo(picture, picturesContainer));
+    photos.push(new photo.Photo(picture, picturesContainer));
   });
 };
 
@@ -147,24 +148,6 @@ var setScrollEnabled = function() {
     }, 100);
   });
 };
-/**
- * @param {Object} data
- * @param {Element} container
- * @constructor
- */
-var Photo = function(data, container) {
-  var self = this;
-  this.data = data;
-  this.element = getPictureElement(this.data, container);
-  this.onPictureClick = function(evt) {
-    evt.preventDefault();
-    gallery.showGallery(filteredPictures.indexOf(self.data));
-  };
-  this.remove = function() {
-    self.element.removeEventListener('click', self.onPictureClick);
-    container.removeChild(self.element);
-  };
-  this.element.addEventListener('click', this.onPictureClick);
-  container.appendChild(this.element);
-}
+module.exports.getPictureElement = getPictureElement;
+module.exports.filteredPictures = filteredPictures;
 
