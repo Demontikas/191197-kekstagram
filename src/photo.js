@@ -1,10 +1,9 @@
 'use strict';
 var gallery = require('./gallery');
 var imageTo = require('./pictures');
-console.log(imageTo);
 /**
  * @param {Object} data
- * @param {NodeElement} container
+ * @param {Node} container
  * @constructor
  */
 var Photo = function(data, container) {
@@ -22,7 +21,5 @@ var Photo = function(data, container) {
   this.element.addEventListener('click', this.onPictureClick);
   container.appendChild(this.element);
 };
-module.exports = {
-  Photo: Photo
-};
+module.exports = Photo;
 

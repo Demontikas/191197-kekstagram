@@ -7,7 +7,7 @@ var elementToClone;
 
 var utilities = require('./utilities');
 var gallery = require('./gallery');
-var photo = require('./photo');
+var Photo = require('./photo');
 
 if ('content' in templateElement) {
   elementToClone = templateElement.content.firstElementChild;
@@ -129,7 +129,7 @@ var renderPictures = function(images, page, replace) {
   var to = from + PAGE_SIZE;
 
   images.slice(from, to).forEach(function(picture) {
-    photos.push(new photo.Photo(picture, picturesContainer));
+    photos.push(new Photo(picture, picturesContainer));
   });
 };
 
