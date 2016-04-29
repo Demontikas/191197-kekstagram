@@ -6,8 +6,11 @@ var templateElement = document.querySelector('#picture-template');
 var elementToClone;
 
 var utilities = require('./utilities');
-var gallery = require('./gallery');
+var Gallery = require('./gallery');
 var Photo = require('./photo');
+
+/** @type {Array.<Object>} */
+var filteredPictures = [];
 
 if ('content' in templateElement) {
   elementToClone = templateElement.content.firstElementChild;
@@ -37,10 +40,6 @@ var getPictureElement = function(data, container) {
     backgroundImage.src = '';
     element.classList.add('picture-load-failure');
   }, 10000);
-  element.addEventListener('click', function(evt) {
-    evt.preventDefault();
-    gallery.showGallery(filteredPictures.indexOf(data));
-  });
   return element;
 };
 
@@ -92,7 +91,8 @@ var setFiltersEnabled = function() {
 };
 var setFilterEnabled = function(filter) {
   filteredPictures = utilities.getFilteredPictures(pictures, filter);
-  gallery.setPictureGallery(filteredPictures);
+  module.exports.filteredPictures = filteredPictures;
+  Gallery.setPictureGallery(filteredPictures);
   pageNumber = 0;
   renderPictures(filteredPictures, pageNumber, true);
   while(utilities.isBottomReached() && utilities.isNextPageAvailable(filteredPictures, pageNumber, PAGE_SIZE)) {
@@ -107,8 +107,6 @@ var PAGE_SIZE = 12;
 /** @type {number} */
 var pageNumber = 0;
 
-/** @type {Array.<Object>} */
-var filteredPictures = [];
 /** @type {Array.<Object>} */
 var photos = [];
 /**
@@ -149,5 +147,4 @@ var setScrollEnabled = function() {
   });
 };
 module.exports.getPictureElement = getPictureElement;
-module.exports.filteredPictures = filteredPictures;
 

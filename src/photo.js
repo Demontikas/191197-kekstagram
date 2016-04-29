@@ -1,5 +1,5 @@
 'use strict';
-var gallery = require('./gallery');
+var Gallery = require('./gallery');
 var imageTo = require('./pictures');
 /**
  * @param {Object} data
@@ -12,7 +12,7 @@ var Photo = function(data, container) {
   this.element = imageTo.getPictureElement(this.data, container);
   this.onPictureClick = function(evt) {
     evt.preventDefault();
-    gallery.showGallery(imageTo.filteredPictures.indexOf(self.data));
+    Gallery.showGallery(imageTo.filteredPictures.indexOf(self.data));
   };
   this.remove = function() {
     self.element.removeEventListener('click', self.onPictureClick);
