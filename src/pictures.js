@@ -7,6 +7,7 @@ var elementToClone;
 
 var utilities = require('./utilities');
 var gallery = require('./gallery');
+var Photo = require('./photo');
 
 if ('content' in templateElement) {
   elementToClone = templateElement.content.firstElementChild;
@@ -108,7 +109,8 @@ var pageNumber = 0;
 
 /** @type {Array.<Object>} */
 var filteredPictures = [];
-
+/** @type {Array.<Object>} */
+var photos = [];
 /**
  * @param {Array.<Object>} pictures
  * @param {number} page
@@ -117,14 +119,17 @@ var filteredPictures = [];
 var renderPictures = function(images, page, replace) {
 
   if (replace) {
-    picturesContainer.innerHTML = '';
+    photos.forEach(function(img) {
+      img.remove();
+    });
+    photos = [];
   }
 
   var from = page * PAGE_SIZE;
   var to = from + PAGE_SIZE;
 
   images.slice(from, to).forEach(function(picture) {
-    getPictureElement(picture, picturesContainer);
+    photos.push(new Photo(picture, picturesContainer));
   });
 };
 
@@ -143,3 +148,6 @@ var setScrollEnabled = function() {
     }, 100);
   });
 };
+module.exports.getPictureElement = getPictureElement;
+module.exports.filteredPictures = filteredPictures;
+
