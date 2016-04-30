@@ -10,9 +10,10 @@ var Photo = function(data, container) {
   var self = this;
   this.data = data;
   this.element = imageTo.getPictureElement(this.data, container);
+  this.pictures = Gallery.getPictureGallery();
   this.onPictureClick = function(evt) {
     evt.preventDefault();
-    Gallery.showGallery(imageTo.filteredPictures.indexOf(self.data));
+    Gallery.showGallery(self.pictures.indexOf(self.data));
   };
   this.remove = function() {
     self.element.removeEventListener('click', self.onPictureClick);

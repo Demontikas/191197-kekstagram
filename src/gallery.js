@@ -77,6 +77,9 @@ var Gallery = function() {
     self.galleryContainer.addEventListener('click', self._onPhotoClick);
     document.addEventListener('keydown', self._onDocumentKeyDown);
   };
+  this.getPictureGallery = function() {
+    return self.galleryPictures;
+  };
   this.setPictureGallery = function(pictures) {
     self.galleryPictures = pictures;
   };

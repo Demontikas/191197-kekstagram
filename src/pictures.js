@@ -91,7 +91,6 @@ var setFiltersEnabled = function() {
 };
 var setFilterEnabled = function(filter) {
   filteredPictures = utilities.getFilteredPictures(pictures, filter);
-  module.exports.filteredPictures = filteredPictures;
   Gallery.setPictureGallery(filteredPictures);
   pageNumber = 0;
   renderPictures(filteredPictures, pageNumber, true);
