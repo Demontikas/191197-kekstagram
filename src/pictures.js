@@ -77,6 +77,10 @@ var pictures;
 getPictures(function(loadedPictures) {
   pictures = loadedPictures;
   setFiltersEnabled();
+  var filter = localStorage.getItem('filter') || DEFAULT_FILTER;
+  document.getElementById(DEFAULT_FILTER).removeAttribute('checked');
+  document.getElementById(filter).setAttribute('checked', '');
+  setFilterEnabled(filter);
   setFilterEnabled(DEFAULT_FILTER);
   setScrollEnabled();
 });
@@ -85,6 +89,7 @@ var DEFAULT_FILTER = utilities.Filter.POPULAR;
 var setFiltersEnabled = function() {
   formFilters.addEventListener('click', function(evt) {
     if (evt.target.classList.contains('filters-radio')) {
+      localStorage.setItem('filter', evt.target.id);
       setFilterEnabled(evt.target.id);
     }
   });
