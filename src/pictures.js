@@ -91,7 +91,9 @@ var DEFAULT_FILTER = utilities.Filter.POPULAR;
 var setFiltersEnabled = function() {
   formFilters.addEventListener('click', function(evt) {
     if (evt.target.classList.contains('filters-radio')) {
-      localStorage.setItem('filter', evt.target.id);
+      if(utilities.storageAvailable('localStorage')) {
+        localStorage.setItem('filter', evt.target.id);
+      }
       setFilterEnabled(evt.target.id);
     }
   });
