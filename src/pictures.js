@@ -77,11 +77,13 @@ var pictures;
 getPictures(function(loadedPictures) {
   pictures = loadedPictures;
   setFiltersEnabled();
-  var filter = localStorage.getItem('filter') || DEFAULT_FILTER;
-  document.getElementById(DEFAULT_FILTER).removeAttribute('checked');
-  document.getElementById(filter).setAttribute('checked', '');
+  var filter = DEFAULT_FILTER;
+  if(utilities.storageAvailable('localStorage')) {
+    filter = localStorage.getItem('filter') || DEFAULT_FILTER;
+    document.getElementById(DEFAULT_FILTER).removeAttribute('checked');
+    document.getElementById(filter).setAttribute('checked', '');
+  }
   setFilterEnabled(filter);
-  setFilterEnabled(DEFAULT_FILTER);
   setScrollEnabled();
 });
 

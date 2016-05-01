@@ -37,7 +37,17 @@ module.exports = {
     var bodyPosition = bodyElement.getBoundingClientRect();
     return bodyPosition.bottom - window.innerHeight - 100 <= 0;
   },
-
+  storageAvailable: function(type) {
+    try {
+      var storage = window[type],
+        x = '__storage_test__';
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return true;
+    } catch(e) {
+      return false;
+    }
+  },
   /**
    * @param {Array} pictures
    * @param {number} page
