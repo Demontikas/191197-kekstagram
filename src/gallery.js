@@ -24,10 +24,10 @@ var Gallery = function() {
    */
   this._onPhotoClick = function(evt) {
     if (evt.target.classList.contains('gallery-overlay') || evt.target.classList.contains('gallery-overlay-close')) {
-      self.hideGallery();
+      location.hash = '';
     } else {
       if (self.indexOfArray < self.galleryPictures.length - 1) {
-        self.showGallery(++self.indexOfArray);
+        location.hash = 'photo/' + self.galleryPictures[++self.indexOfArray].url;
       }
     }
   };
@@ -37,24 +37,30 @@ var Gallery = function() {
    */
   this._onDocumentKeyDown = function(evt) {
     if(evt.keyCode === 27) {
-      self.hideGallery();
+      location.hash = '';
     }
     if(evt.keyCode === 39) {
       if (self.indexOfArray < self.galleryPictures.length - 1) {
-        self.showGallery(++self.indexOfArray);
+        location.hash = 'photo/' + self.galleryPictures[++self.indexOfArray].url;
       }
     }
     if(evt.keyCode === 37) {
       if (self.indexOfArray > 0) {
-        self.showGallery(--self.indexOfArray);
+        location.hash = 'photo/' + self.galleryPictures[--self.indexOfArray].url;
       }
     }
   };
   /**
    * Показ галереи при клике на картинку
-   * @param {number} index
+   * @param {string} _locatHash
    */
-  this.showGallery = function(index) {
+  this.showGallery = function(_locatHash) {
+    var index = 0;
+    self.galleryPictures.forEach(function(galleryImage, i) {
+      if(galleryImage.url === _locatHash) {
+        index = i;
+      }
+    });
     self.indexOfArray = index;
     self.galleryContainer.classList.remove('invisible');
     var imgagePreview = self.galleryContainerPreview.querySelector('img');
@@ -77,11 +83,20 @@ var Gallery = function() {
     self.galleryContainer.addEventListener('click', self._onPhotoClick);
     document.addEventListener('keydown', self._onDocumentKeyDown);
   };
-  this.getPictureGallery = function() {
-    return self.galleryPictures;
-  };
   this.setPictureGallery = function(pictures) {
     self.galleryPictures = pictures;
   };
+  this.restoredHash = function() {
+    var _locationHash = location.hash.match(/#photo\/(\S+)/);
+    if ( _locationHash !== null) {
+      self.showGallery(_locationHash[1]);
+    } else {
+      self.hideGallery();
+    }
+  };
+  this.onHashChange = function() {
+    self.restoredHash();
+  };
+  window.addEventListener('hashchange', this.onHashChange);
 };
 module.exports = new Gallery();
