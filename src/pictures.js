@@ -77,7 +77,13 @@ var pictures;
 getPictures(function(loadedPictures) {
   pictures = loadedPictures;
   setFiltersEnabled();
-  setFilterEnabled(DEFAULT_FILTER);
+  var filter = DEFAULT_FILTER;
+  if(utilities.storageAvailable('localStorage')) {
+    filter = localStorage.getItem('filter') || DEFAULT_FILTER;
+    document.getElementById(DEFAULT_FILTER).removeAttribute('checked');
+    document.getElementById(filter).setAttribute('checked', '');
+  }
+  setFilterEnabled(filter);
   setScrollEnabled();
 });
 
@@ -85,6 +91,9 @@ var DEFAULT_FILTER = utilities.Filter.POPULAR;
 var setFiltersEnabled = function() {
   formFilters.addEventListener('click', function(evt) {
     if (evt.target.classList.contains('filters-radio')) {
+      if(utilities.storageAvailable('localStorage')) {
+        localStorage.setItem('filter', evt.target.id);
+      }
       setFilterEnabled(evt.target.id);
     }
   });
