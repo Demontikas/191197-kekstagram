@@ -19,15 +19,21 @@ var Gallery = function() {
   /** @type {Array.<Object>} */
   this.galleryPictures = [];
 
+  this.forHide = function() {
+    location.hash = '';
+  };
+  this.forShow = function(index) {
+    location.hash = 'photo/' + self.galleryPictures[index].url;
+  };
   /**
    * Показ следующей картинки и закрытие галереи при клике на черный оверлей и кнопку закрытия
    */
   this._onPhotoClick = function(evt) {
     if (evt.target.classList.contains('gallery-overlay') || evt.target.classList.contains('gallery-overlay-close')) {
-      self.hideGallery();
+      self.forHide();
     } else {
       if (self.indexOfArray < self.galleryPictures.length - 1) {
-        self.showGallery(++self.indexOfArray);
+        self.forShow(++self.indexOfArray);
       }
     }
   };
@@ -37,24 +43,28 @@ var Gallery = function() {
    */
   this._onDocumentKeyDown = function(evt) {
     if(evt.keyCode === 27) {
-      self.hideGallery();
+      self.forHide();
     }
     if(evt.keyCode === 39) {
       if (self.indexOfArray < self.galleryPictures.length - 1) {
-        self.showGallery(++self.indexOfArray);
+        self.forShow(++self.indexOfArray);
       }
     }
     if(evt.keyCode === 37) {
       if (self.indexOfArray > 0) {
-        self.showGallery(--self.indexOfArray);
+        self.forShow(--self.indexOfArray);
       }
     }
   };
   /**
    * Показ галереи при клике на картинку
-   * @param {number} index
+   * @param {string} _locatHash
    */
-  this.showGallery = function(index) {
+  this.showGallery = function(_locatHash) {
+    var index = 0;
+    while(this.galleryPictures[index].url !== _locatHash) {
+      index++;
+    }
     self.indexOfArray = index;
     self.galleryContainer.classList.remove('invisible');
     var imgagePreview = self.galleryContainerPreview.querySelector('img');
@@ -77,11 +87,20 @@ var Gallery = function() {
     self.galleryContainer.addEventListener('click', self._onPhotoClick);
     document.addEventListener('keydown', self._onDocumentKeyDown);
   };
-  this.getPictureGallery = function() {
-    return self.galleryPictures;
-  };
   this.setPictureGallery = function(pictures) {
     self.galleryPictures = pictures;
   };
+  this.restoredHash = function() {
+    var _locationHash = location.hash.match(/#photo\/(\S+)/);
+    if ( _locationHash !== null) {
+      self.showGallery(_locationHash[1]);
+    } else {
+      self.hideGallery();
+    }
+  };
+  this.onHashChange = function() {
+    self.restoredHash();
+  };
+  window.addEventListener('hashchange', this.onHashChange);
 };
 module.exports = new Gallery();

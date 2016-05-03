@@ -20,6 +20,7 @@ if ('content' in templateElement) {
 var getPictureElement = function(data, container) {
   var element = elementToClone.cloneNode(true);
   var img = element.querySelector('img');
+  element.setAttribute('href', '#photo/' + data.url);
   element.querySelector('.picture-comments').textContent = data.comments;
   element.querySelector('.picture-likes').textContent = data.likes;
 
@@ -101,6 +102,7 @@ var setFiltersEnabled = function() {
 var setFilterEnabled = function(filter) {
   filteredPictures = utilities.getFilteredPictures(pictures, filter);
   Gallery.setPictureGallery(filteredPictures);
+  Gallery.restoredHash();
   pageNumber = 0;
   renderPictures(filteredPictures, pageNumber, true);
   while(utilities.isBottomReached() && utilities.isNextPageAvailable(filteredPictures, pageNumber, PAGE_SIZE)) {
