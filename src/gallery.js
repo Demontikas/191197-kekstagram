@@ -21,10 +21,10 @@ var Gallery = function() {
 
   this.forHide = function() {
     location.hash = '';
-  }
+  };
   this.forShow = function(index) {
     location.hash = 'photo/' + self.galleryPictures[index].url;
-  }
+  };
   /**
    * Показ следующей картинки и закрытие галереи при клике на черный оверлей и кнопку закрытия
    */
