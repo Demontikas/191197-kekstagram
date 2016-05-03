@@ -6,13 +6,13 @@ var imageTo = require('./pictures');
  * @constructor
  */
 var Photo = function(data, container) {
-  var self = this;
   this.data = data;
   this.element = imageTo.getPictureElement(this.data, container);
-  this.remove = function() {
-    container.removeChild(self.element);
-  };
-  container.appendChild(this.element);
+  this.container = container;
+  this.container.appendChild(this.element);
+};
+Photo.prototype.remove = function() {
+  this.container.removeChild(this.element);
 };
 module.exports = Photo;
 
