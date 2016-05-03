@@ -19,15 +19,21 @@ var Gallery = function() {
   /** @type {Array.<Object>} */
   this.galleryPictures = [];
 
+  this.forHide = function() {
+    location.hash = '';
+  }
+  this.forShow = function(index) {
+    location.hash = 'photo/' + self.galleryPictures[index].url;
+  }
   /**
    * Показ следующей картинки и закрытие галереи при клике на черный оверлей и кнопку закрытия
    */
   this._onPhotoClick = function(evt) {
     if (evt.target.classList.contains('gallery-overlay') || evt.target.classList.contains('gallery-overlay-close')) {
-      location.hash = '';
+      self.forHide();
     } else {
       if (self.indexOfArray < self.galleryPictures.length - 1) {
-        location.hash = 'photo/' + self.galleryPictures[++self.indexOfArray].url;
+        self.forShow(++self.indexOfArray);
       }
     }
   };
@@ -37,16 +43,16 @@ var Gallery = function() {
    */
   this._onDocumentKeyDown = function(evt) {
     if(evt.keyCode === 27) {
-      location.hash = '';
+      self.forHide();
     }
     if(evt.keyCode === 39) {
       if (self.indexOfArray < self.galleryPictures.length - 1) {
-        location.hash = 'photo/' + self.galleryPictures[++self.indexOfArray].url;
+        self.forShow(++self.indexOfArray);
       }
     }
     if(evt.keyCode === 37) {
       if (self.indexOfArray > 0) {
-        location.hash = 'photo/' + self.galleryPictures[--self.indexOfArray].url;
+        self.forShow(--self.indexOfArray);
       }
     }
   };
@@ -56,11 +62,9 @@ var Gallery = function() {
    */
   this.showGallery = function(_locatHash) {
     var index = 0;
-    self.galleryPictures.forEach(function(galleryImage, i) {
-      if(galleryImage.url === _locatHash) {
-        index = i;
-      }
-    });
+    while(this.galleryPictures[index].url !== _locatHash) {
+      index++;
+    }
     self.indexOfArray = index;
     self.galleryContainer.classList.remove('invisible');
     var imgagePreview = self.galleryContainerPreview.querySelector('img');
