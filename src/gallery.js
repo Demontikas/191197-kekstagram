@@ -37,10 +37,13 @@ Gallery.prototype._onDocumentKeyDown = function(evt) {
 Gallery.prototype._onPhotoClick = function(evt) {
   if (evt.target.classList.contains('gallery-overlay') || evt.target.classList.contains('gallery-overlay-close')) {
     this.forHide();
-  } else {
-    if (this.indexOfArray < this.galleryPictures.length - 1) {
-      this.forShow(++this.indexOfArray);
-    }
+  } else if(evt.target.classList.contains('likes-count')) {
+    var pictureNode = document.querySelector('.pictures');
+    var pictureList = pictureNode.querySelectorAll('.picture');
+    pictureList[this.indexOfArray].querySelector('.picture-likes').click();
+    evt.target.textContent = this.galleryPictures[this.indexOfArray].likes;
+  } else if (this.indexOfArray < this.galleryPictures.length - 1) {
+    this.forShow(++this.indexOfArray);
   }
 };
 Gallery.prototype.forHide = function() {
