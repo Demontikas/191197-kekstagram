@@ -56,6 +56,11 @@ module.exports = {
    */
   isNextPageAvailable: function(pic, page, pageSize) {
     return page < Math.floor(pic.length / pageSize);
+  },
+  inherit: function(Child, Parent) {
+    function Ctor() {}
+    Ctor.prototype = Parent.prototype;
+    Child.prototype = new Ctor();
   }
 };
 

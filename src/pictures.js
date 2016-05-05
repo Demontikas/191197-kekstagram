@@ -17,14 +17,12 @@ if ('content' in templateElement) {
 } else {
   elementToClone = templateElement.querySelector('.picture');
 }
-var getPictureElement = function(data, container) {
+var getPictureElement = function(data) {
   var element = elementToClone.cloneNode(true);
   var img = element.querySelector('img');
   element.setAttribute('href', '#photo/' + data.url);
   element.querySelector('.picture-comments').textContent = data.comments;
   element.querySelector('.picture-likes').textContent = data.likes;
-
-  container.appendChild(element);
 
   var backgroundImage = new Image();
   var backgroundLoadTimeout;
